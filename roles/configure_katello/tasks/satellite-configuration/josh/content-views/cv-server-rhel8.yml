@@ -1,0 +1,31 @@
+---
+
+- name: configure content view cv-server-rhel8
+  theforeman.foreman.katello_content_view:
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    validate_certs: false
+    server_url: "{{ satellite_url }}"
+    organization: "{{ organization.organization_name }}"
+    name: cv-server-rhel8
+    repositories:
+      - name: Red Hat Enterprise Linux 8 for x86_64 - BaseOS RPMs 8
+        product: Red Hat Enterprise Linux for x86_64
+      - name: Red Hat Satellite Tools 6.6 for RHEL 8 x86_64 RPMs
+        product: Red Hat Enterprise Linux for x86_64
+  register: publish_content_view
+  delegate_to: "{{ delegate_host }}"
+
+
+- name: set current content view name
+  set_fact:
+    current_content_view: cv-server-rhel8
+  when:
+    - (publish_content_view is defined and publish_content_view.changed) or (content_view_filter is defined and content_view_filter.changed)
+
+- name: publish new version of the content view
+  include_tasks: "{{ role_path }}/tasks/publish-content-view.yml"
+  vars:
+    content_view: "{{ current_content_view }}"
+  when:
+    - (publish_content_view is defined and publish_content_view.changed) or (content_view_filter is defined and content_view_filter.changed)

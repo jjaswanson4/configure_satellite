@@ -1,0 +1,32 @@
+---
+
+- name: create composite content view composite-rhel8
+  theforeman.foreman.katello_content_view:
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    validate_certs: false
+    server_url: "{{ satellite_url }}"
+    organization: "{{ organization.organization_name }}"
+    name: composite-rhel8
+    composite: true
+    components:
+      - content_view: cv-server-rhel8
+        latest: true
+      - content_view: cv-ansible-rhel8
+        latest: true
+      - content_view: cv-appstream-rhel8
+        latest: true
+      - content_view: cv-supplementary-rhel8
+        latest: true
+      - content_view: cv-kickstart-rhel8.1
+        latest: true
+  delegate_to: localhost
+  register: publish_content_view
+
+- name: include tasks to publish new version of composite-rhel8
+  include_tasks: "/home/jswanson/satellite6.6-dev-rearchitect/roles/configure_katello/tasks/publish-content-view.yml"
+  vars:
+    content_view: composite-rhel8
+  when:
+    - publish_content_view is defined
+    - publish_content_view.changed

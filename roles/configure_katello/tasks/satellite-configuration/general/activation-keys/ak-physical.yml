@@ -1,0 +1,16 @@
+---
+
+- name: create activation key ak-physical
+  theforeman.foreman.katello_activation_key:
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    validate_certs: false
+    server_url: "{{ satellite_url }}"
+    organization: "{{ organization.organization_name }}"
+    name: ak-physical
+    lifecycle_environment: Library
+    content_view: Default Organization View
+    subscriptions:
+      - name: "Red Hat Enterprise Linux Server with Smart Management, Premium (Physical or Virtual Nodes)"
+
+  delegate_to: "{{ delegate_host }}"

@@ -1,0 +1,11 @@
+---
+
+- import_tasks: organizations.yml
+- import_tasks: locations.yml
+- import_tasks: domains.yml
+- import_tasks: subnets.yml
+- import_tasks: compute-resources.yml
+- import_tasks: compute-profiles.yml
+- import_tasks: provisioning-templates.yml
+- import_tasks: partition-tables.yml
+- import_tasks: operating-systems.yml

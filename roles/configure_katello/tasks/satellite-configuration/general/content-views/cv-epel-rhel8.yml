@@ -1,0 +1,43 @@
+---
+
+- name: configure content view cv-epel-rhel8
+  theforeman.foreman.katello_content_view:
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    validate_certs: false
+    server_url: "{{ satellite_url }}"
+    organization: "{{ organization.organization_name }}"
+    name: cv-epel-rhel8
+    repositories:
+      - name: Extra Packages for Enterprise Linux 8 Repository
+        product: Extra Packages for Enterprise Linux 8
+  register: publish_content_view
+  delegate_to: "{{ delegate_host }}"
+
+- name: configure filter include htop from epel8 for cv-epel-rhel8
+  theforeman.foreman.katello_content_view_filter:
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    validate_certs: false
+    server_url: "{{ satellite_url }}"
+    organization: "{{ organization.organization_name }}"
+    filter_type: rpm
+    inclusion: True
+    content_view: cv-epel-rhel8
+    name: include htop from epel8
+    package_name: htop
+  delegate_to: "{{ delegate_host }}"
+  register: content_view_filter
+
+- name: set current content view name
+  set_fact:
+    current_content_view: cv-epel-rhel8
+  when:
+    - (publish_content_view is defined and publish_content_view.changed) or (content_view_filter is defined and content_view_filter.changed)
+
+- name: publish new version of the content view
+  include_tasks: "{{ role_path }}/tasks/publish-content-view.yml"
+  vars:
+    content_view: "{{ current_content_view }}"
+  when:
+    - (publish_content_view is defined and publish_content_view.changed) or (content_view_filter is defined and content_view_filter.changed)

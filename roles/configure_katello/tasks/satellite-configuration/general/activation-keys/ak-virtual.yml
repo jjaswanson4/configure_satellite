@@ -1,0 +1,14 @@
+---
+
+- name: create activation key ak-virtual
+  theforeman.foreman.katello_activation_key:
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    validate_certs: false
+    server_url: "{{ satellite_url }}"
+    organization: "{{ organization.organization_name }}"
+    name: ak-virtual
+    lifecycle_environment: Library
+    content_view: Default Organization View
+
+  delegate_to: "{{ delegate_host }}"

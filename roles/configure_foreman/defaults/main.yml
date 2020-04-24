@@ -1,0 +1,5 @@
+---
+
+satellite_url: "https://{{ ansible_fqdn }}"
+
+#lifecycle_environments_raw: []
