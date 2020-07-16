@@ -33,10 +33,9 @@ satellite:
 ```yaml
 satellite:
   foreman:
-	  organizations:
-		  - name: org_1
-			  initial_organization: true
-		  - name: org_2
-			- name: org_3
+    organizations:
+      - name: org_1
+        initial_organization: true
+      - name: org_2
+      - name: org_3
 ```
-			  
