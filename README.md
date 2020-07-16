@@ -58,3 +58,55 @@ satellite:
           - name: org_2
           - name: org_3
 ```
+- domains: list of domains mapped to one or more organizations and locations.
+```yaml
+satellite:
+  foreman:
+    domains:
+      - name: domain1.internal.lcl
+        description: default dns domain
+        organizations:
+          - name: org_1
+          - name: org_3
+        locations:
+          - name: loc_1
+          - name: loc_3
+      - name: domain2.internal.lcl
+        description: secondary dns domain
+        organizations:
+          - name: org_2
+        locations:
+          - name: loc_2
+```
+- subnets: list of subnets mapped to one or more organizations, locations, and domains.
+```yaml
+satellite:
+  foreman:
+    subnets:
+      - name: test-subnet-192.168.0.0_24
+        network: 192.168.0.0
+        mask: 255.255.255.0
+        gateway: 192.168.0.1
+        dns_primary: 192.168.0.10
+        dns_secondary: 192.168.1.11
+        domains:
+          - name: domain1.internal.lcl
+        organizations:
+          - name: org_1
+          - name: org_3
+        locations:
+          - name: loc_1
+          - name: loc_3
+      - name: prod-subnet-10.1.0.0_22
+        network: 10.1.0.0
+        mask: 255.255.252.0
+        gateway: 10.1.0.1
+        dns_primary: 10.1.0.10
+        dns_secondary: 10.1.0.11
+        domains:
+          - name: domain2.internal.lcl
+        organizations:
+          - name: org_2
+        locations:
+          - name: loc_2
+```
