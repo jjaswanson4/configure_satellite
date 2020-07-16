@@ -26,7 +26,7 @@ All vars are defined in a dictionary stored in a vars file included at the playb
 ```yaml
 satellite:
   foreman:
-	katello:
+  katello:
 ```
 
 - Organizations: list of satellite organizations to be created, multiple are supported. At least one must be defined with `initial_organization` set to `true`.
