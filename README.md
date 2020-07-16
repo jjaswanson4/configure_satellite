@@ -22,7 +22,22 @@ ansible-galaxy collection install jjaswanson4.configure_satellite
 ## Examples
 
 ## Vars
-All vars are defined in a dictionary stored in a vars file included at the playbook level. There are two roles that configure satellite: configure_foreman and configure_katello. Foreman components (such as compute resources, subnets, etc) are defined under satellite.foreman, and katello settings (such are content views, repositories, etc) are defined under satellite.katello:
+All vars are defined in a dictionary stored in a vars file included at the playbook level. There are two roles that configure satellite: configure_foreman and configure_katello. Foreman components (such as compute resources, subnets, etc) are defined under satellite.foreman, and katello settings (such are content views, repositories, etc) are defined under satellite.katello. Below are two tables explaining variables and examples.
+
+`satellite.foreman:`
+| Name                     | Description
+|--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `organizations`          | List of satellite organizations, at least one must be defined with `initial_organization` set to `true`.                                               |
+| `locations`              | List of satellite locations, at least one must be defined with `initial_location` set to `true`. Locations can be mapped to zero to many organization. |
+| `domains`                | List of domains mapped to zero or many organizations and locations.                                                                                    |
+| `subnets`                | List of subnets mapped to zero or many organizations, locations, and domains.                                                                          |
+| `compute_resources`      | List of compute resources mapped to zaro or many organizations and locations.                                                                          |
+| `compute_profiles`       | List of compute profiles mapped to a compute resource.                                                                                                 |
+| `provisioning_templates` | List of provisioning templates mapped to zero to many organizations and locations. Expects a .erb file to exist on the server running ansible.         |
+| `partition_tables`       | List of partition tables mapped to zero to many organizations and locations. Expects a .erb file to exist on the server running ansible.               |
+| `settings`               | List of foreman settings defined in name:value pairs.                                                                                                  |
+
+- High level structure:
 ```yaml
 satellite:
   foreman:
