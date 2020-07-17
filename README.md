@@ -44,7 +44,7 @@ satellite:
   katello:
 ```
 
-- Organizations: list of satellite organizations, at least one must be defined with `initial_organization` set to `true`.
+- organizations:
 ```yaml
 satellite:
   foreman:
@@ -54,7 +54,7 @@ satellite:
       - name: org_2
       - name: org_3
 ```
-- Locations: list of satellite locations, at least one must be defined with `initial_location` set to `true`. Locations can be mapped to 1 or more organization.
+- locations:
 ```yaml
 satellite:
   foreman:
@@ -73,7 +73,7 @@ satellite:
           - name: org_2
           - name: org_3
 ```
-- domains: list of domains mapped to one or more organizations and locations.
+- domains:
 ```yaml
 satellite:
   foreman:
@@ -93,7 +93,7 @@ satellite:
         locations:
           - name: loc_2
 ```
-- subnets: list of subnets mapped to one or more organizations, locations, and domains.
+- subnets:
 ```yaml
 satellite:
   foreman:
@@ -125,3 +125,23 @@ satellite:
         locations:
           - name: loc_2
 ```
+- compute_resources:
+```yaml
+satellite:
+  foreman:
+    compute_resources:
+      - name: example_vcenter
+        provider: vmware
+        provider_params:
+          url: vcenter.domain1.interna.lcl
+          user: provisioning@vsphere.local
+          password: "{{ lookup('file', '/tmp/vcenter-password') }}"
+          datacenter: dc1
+        organizations:
+          - name: org_1
+          - name: org_2
+        locations:
+          - name: loc_1
+          - name: loc_3
+```
+        
