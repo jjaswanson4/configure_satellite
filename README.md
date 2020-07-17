@@ -194,4 +194,16 @@ satellite:
           - name: loc_1
           - name: loc_2
           - name: loc_3
-```        
+```
+- settings:
+```yaml
+satellite:
+  foreman:
+    settings:
+      - name: default_download_policy
+        value: on_demand
+      - name: default_proxy_download_policy
+        value: on_demand
+      - name: unregister_delete_host
+        value: true
+```
