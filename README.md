@@ -180,4 +180,18 @@ satellite:
               size_gb: 100
               datastore: datastore1
 ```
-        
+- partition_tables:
+```yaml
+satellite:
+  foreman:
+    partition_tables:
+      - name: RHEL7 Kickstart Partition Table
+        file: /tmp/rhel7_kickstart_partition_table.erb
+        organizations:
+          - name: org_1
+          - name: org_2
+        locations:
+          - name: loc_1
+          - name: loc_2
+          - name: loc_3
+```        
