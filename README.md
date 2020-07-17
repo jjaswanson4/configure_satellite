@@ -205,4 +205,158 @@ satellite:
       - name: unregister_delete_host
         value: true
 ```
-
+### Katello Settings ###
+Katello settings are defined under satellite.katello. A list of organizations containes the organization-specific settings to be set. Below is a commented example vars file.
+```yaml
+satellite:
+  katello:
+    - organization_name: org_1 # List of organizations
+      state: present
+      manifest: /tmp/manifest_satellite-building-testmanifest_20200320T193207Z.zip # Manifest file to be uploaded
+      repo_sync_attempts: 3 # How many times to attempt to sync repositories from the CDN
+      lifecycle_environments: # List of lifecycle environments
+        - name: test
+          description: wild west
+          prior: Library
+        - name: stage
+          description: dont test in prod
+          prior: test
+        - name: prod
+          description: big leagues
+          prior: stage
+      content_views: # List of content views. To create "custom" products, repos, and content credentials, define them.
+        - name: cv-epel-rhel8
+          repos:
+            - repo: Extra Packages for Enterprise Linux 8 Repository
+              repo_url: http://download.fedoraproject.org/pub/epel/8/Everything/x86_64
+              product: Extra Packages for Enterprise Linux 8
+              content_credential: https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8
+              content_credential_name: cc-epel8
+          filters:
+            - name: include htop from epel8
+              filter_type: rpm
+              package_name: htop
+              inclusion: true
+        - name: cv-ansible-rhel8
+          description: ansible on RHEL8
+          repos:
+            - repo: Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+              product: Red Hat Ansible Engine
+            - repo: Red Hat Ansible Engine 2.8 for RHEL 8 x86_64 (RPMs)
+              product: Red Hat Ansible Engine
+        - name: cv-appstream-rhel8
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8
+        - name: cv-server-rhel8
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8
+            - repo: Red Hat Satellite Tools 6.6 for RHEL 8 x86_64 (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              content_view: cv-server-rhel8
+        - name: cv-supplementary-rhel8
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8
+        - name: cv-kickstart-rhel8.2
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8.2
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8.2
+      composite_content_views:
+        - name: composite-rhel8
+          description: rhel 8 packages
+          auto_publish: false
+          component_content_views: # If a specific content view version is desired, then define 'content_view_version', otherwise latest is used
+            - name: cv-server-rhel8
+            - name: cv-ansible-rhel8
+            - name: cv-appstream-rhel8
+            - name: cv-supplementary-rhel8
+            - name: cv-kickstart-rhel8.2
+      activation_keys: # List of activation keys
+        - name: ak-virtual
+        - name: ak-physical
+          subscriptions:
+            - subscription_name: Red Hat Enterprise Linux Server with Smart Management, Premium (Physical or Virtual Nodes)
+        - name: ak-epel8
+          subscriptions:
+            - subscription_name: Extra Packages for Enterprise Linux 8
+        - name: ak-rhel8-prod
+          lifecycle_environment: prod
+          content_view: composite-rhel8
+          release_version: 8
+    - organization_name: org_2
+      state: present
+      manifest: /tmp/manifest_satellite-building-testmanifest2_20200320T204013Z.zip
+      repo_sync_attempts: 3
+      lifecycle_environments:
+        - name: dev
+          description: dev land
+          prior: Library
+        - name: QA
+          description: before prod
+          prior: dev
+        - name: prod
+          description: big leagues
+          prior: QA
+      content_views:
+        - name: cv-ansible-rhel8
+          description: ansible on RHEL8
+          repos:
+            - repo: Red Hat Ansible Engine 2 for RHEL 8 x86_64 (RPMs)
+              product: Red Hat Ansible Engine
+            - repo: Red Hat Ansible Engine 2.8 for RHEL 8 x86_64 (RPMs)
+              product: Red Hat Ansible Engine
+        - name: cv-appstream-rhel8
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8
+        - name: cv-server-rhel8
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8
+            - repo: Red Hat Satellite Tools 6.6 for RHEL 8 x86_64 (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              content_view: cv-server-rhel8
+        - name: cv-supplementary-rhel8
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - Supplementary (RPMs)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8
+        - name: cv-kickstart-rhel8.2
+          repos:
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8.2
+            - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
+              product: Red Hat Enterprise Linux for x86_64
+              releasever: 8.2
+      composite_content_views:
+        - name: composite-rhel8
+          description: rhel 8 packages
+          auto_publish: false
+          component_content_views:
+            - name: cv-server-rhel8
+            - name: cv-ansible-rhel8
+            - name: cv-appstream-rhel8
+            - name: cv-supplementary-rhel8
+            - name: cv-kickstart-rhel8.2
+      activation_keys:
+        - name: ak-virtual
+        - name: ak-physical
+          subscriptions:
+            - subscription_name: Red Hat Enterprise Linux Server with Smart Management, Premium (Physical or Virtual Nodes)
+        - name: ak-rhel8-prod
+          lifecycle_environment: prod
+          content_view: composite-rhel8
+          release_version: 8
+```
