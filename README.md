@@ -144,4 +144,40 @@ satellite:
           - name: loc_1
           - name: loc_3
 ```
+- compute_profiles:
+```yaml
+satellite:
+  foreman:
+    compute_profiles:
+      - name: general-vm
+        compute_resource: example_vcenter
+        vm_attrs:
+          cpus: 2
+          corespersocket: 2
+          memory_mb: 2048
+          firmware: bios
+          cluster: general
+          resource_pool: Resources
+          path: /Datacenters/dc1/vm
+          guest_id: rhel7_64Guest
+          hardware_version: vmx-13
+          memoryHotAddEnabled: 1
+          cpuHotAddEnabled: 1
+          add_cdrom: 0
+          scsi_controllers:
+           - type: ParaVirtualSCSIController
+             key: 1000
+          interface_attributes:
+            0:
+              type: VirtualVmxnet3
+              network: virtaul-machines
+          volumes_attributes:
+            0:
+              thin: true
+              name: Hard disk
+              mode: persistent
+              controller_key: 1000
+              size_gb: 100
+              datastore: datastore1
+```
         
