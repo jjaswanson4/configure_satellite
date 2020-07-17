@@ -22,10 +22,14 @@ ansible-galaxy collection install jjaswanson4.configure_satellite
 ## Examples
 
 ## Vars
+All vars are defined in a dictionary stored in a vars file included at the playbook level. There are two roles that configure satellite: configure_foreman and configure_katello, that expect variables defined under `foreman` and `katello`.
+```yaml
+satellite:
+  foreman:
+  katello:
+```
 ### Foreman Settings ###
-All vars are defined in a dictionary stored in a vars file included at the playbook level. There are two roles that configure satellite: configure_foreman and configure_katello. Foreman components (such as compute resources, subnets, etc) are defined under satellite.foreman, and katello settings (such are content views, repositories, etc) are defined under satellite.katello. Below are two tables explaining variables and examples.
-
-`satellite.foreman:`
+Foreman components (such as compute resources, subnets, etc) are defined under `satellite.foreman:`
 | Name                     | Description
 |--------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `organizations`          | List of satellite organizations, at least one must be defined with `initial_organization` set to `true`.                                               |
@@ -37,17 +41,6 @@ All vars are defined in a dictionary stored in a vars file included at the playb
 | `provisioning_templates` | List of provisioning templates mapped to zero to many organizations and locations. Expects a .erb file to exist on the server running ansible.         |
 | `partition_tables`       | List of partition tables mapped to zero to many organizations and locations. Expects a .erb file to exist on the server running ansible.               |
 | `settings`               | List of foreman settings defined in name:value pairs.                                                                                                  |
-
-### Katello Settings ###
-
-`satellite.katello:`
-
-- High level structure:
-```yaml
-satellite:
-  foreman:
-  katello:
-```
 
 - organizations:
 ```yaml
