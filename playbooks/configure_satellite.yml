@@ -1,0 +1,14 @@
+---
+
+- name: configure satellite
+  hosts:
+    - satellite
+  collections:
+    - jjaswanson4.configure_satellite
+  pre_tasks:
+    - name: load in satellite vars
+      include_vars:
+        file: "{{ vars_file }}"
+  roles:
+    - jjaswanson4.configure_satellite.configure_foreman
+    - jjaswanson4.configure_satellite.configure_katello

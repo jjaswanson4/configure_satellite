@@ -1,6 +1,6 @@
 namespace: jjaswanson4
 name: configure_satellite
-version: 1.0.0
+version: 1.0.2
 readme: README.md
 authors:
 authors:
@@ -13,8 +13,9 @@ license:
 tags:
   - satellite6
   - configure_satellite
-dependencies:
-  "jjaswanson4.install_satellite": "*"
+  - rhel7
+#dependencies:
+#  "jjaswanson4.install_satellite": "*"
 repository: https://github.com/jjaswanson4/configure_satellite
 documentation: https://github.com/jjaswanson4/configure_satellite/blob/master/README.md
 homepage: https://github.com/jjaswanson4/configure_satellite
