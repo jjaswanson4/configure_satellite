@@ -15,5 +15,5 @@
     loop_var: compute_profile
   loop: "{{ satellite.foreman.compute_profiles }}"
   when:
-    - foreman.satellite.compute_profiles is defined
+    - satellite.foreman.compute_profiles is defined
   delegate_to: "{{ delegate_host }}"
