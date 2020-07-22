@@ -1,7 +1,7 @@
 ---
 
 - name: configure domains
-  theforeman.foreman.foreman_domain:
+  theforeman.foreman.domain:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -13,4 +13,6 @@
   loop_control:
     loop_var: domain
   loop: "{{ satellite.foreman.domains }}"
+  when:
+    - satellite.foreman.domains is defined
   delegate_to: "{{ delegate_host }}"
