@@ -1,7 +1,7 @@
 ---
 
 - name: configure partition templates
-  theforeman.foreman.foreman_ptable:
+  theforeman.foreman.partition_table:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -14,4 +14,6 @@
   loop_control:
     loop_var: partition_table
   loop: "{{ satellite.foreman.partition_tables }}"
+  when:
+    - satellite.foreman.partition_tables is defined
   delegate_to: "{{ delegate_host }}"
