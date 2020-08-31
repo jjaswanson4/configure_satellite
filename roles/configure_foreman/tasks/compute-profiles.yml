@@ -1,7 +1,7 @@
 ---
 
 - name: configure compute_profiles
-  theforeman.foreman.foreman_compute_profile:
+  theforeman.foreman.compute_profile:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -14,4 +14,6 @@
   loop_control:
     loop_var: compute_profile
   loop: "{{ satellite.foreman.compute_profiles }}"
+  when:
+    - satellite.foreman.compute_profiles is defined
   delegate_to: "{{ delegate_host }}"

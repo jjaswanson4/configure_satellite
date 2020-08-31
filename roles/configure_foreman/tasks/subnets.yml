@@ -1,7 +1,7 @@
 ---
 
 - name: configure subnets
-  theforeman.foreman.foreman_subnet:
+  theforeman.foreman.subnet:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -26,4 +26,6 @@
   loop_control:
     loop_var: subnet
   loop: "{{ satellite.foreman.subnets }}"
+  when:
+    - satellite.foreman.subnets is defined
   delegate_to: "{{ delegate_host }}"

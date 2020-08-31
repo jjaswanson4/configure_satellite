@@ -1,7 +1,7 @@
 ---
 
 - name: configure provisioning templates
-  theforeman.foreman.foreman_provisioning_template:
+  theforeman.foreman.provisioning_template:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -14,4 +14,6 @@
   loop_control:
     loop_var: provisioning_template
   loop: "{{ satellite.foreman.provisioning_templates }}"
+  when:
+    - satellite.foreman.provisioning_templates is defined
   delegate_to: "{{ delegate_host }}"

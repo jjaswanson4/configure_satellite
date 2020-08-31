@@ -1,7 +1,7 @@
 ---
 
 - name: configure compute resources
-  theforeman.foreman.foreman_compute_resource:
+  theforeman.foreman.compute_resource:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -15,4 +15,6 @@
   loop_control:
     loop_var: compute_resource
   loop: "{{ satellite.foreman.compute_resources }}"
+  when:
+    - satellite.foreman.compute_resources is defined
   delegate_to: "{{ delegate_host }}"
