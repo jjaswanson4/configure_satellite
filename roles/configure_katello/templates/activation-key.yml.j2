@@ -1,7 +1,7 @@
 ---
 
 - name: create activation key {{ activation_key.name }}
-  theforeman.foreman.katello_activation_key:{% raw %}
+  theforeman.foreman.activation_key:{% raw %}
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
