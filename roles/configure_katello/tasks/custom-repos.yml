@@ -1,7 +1,7 @@
 ---
 
 - name: configure repos for custom products
-  theforeman.foreman.katello_repository:
+  theforeman.foreman.repository:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false

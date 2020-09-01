@@ -7,7 +7,7 @@
   check_mode: false
 
 - name: set Red Hat products to sync plan
-  theforeman.foreman.katello_product:
+  theforeman.foreman.product:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
