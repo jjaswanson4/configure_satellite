@@ -9,7 +9,7 @@
     - sync_repos
 
 - name: sync all repos
-  theforeman.foreman.katello_sync:
+  theforeman.foreman.repository_sync:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false

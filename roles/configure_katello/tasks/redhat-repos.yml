@@ -1,7 +1,7 @@
 ---
 
 - name: configure Red Hat repos
-  theforeman.foreman.katello_repository_set:
+  theforeman.foreman.repository_set:
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
