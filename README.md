@@ -214,6 +214,7 @@ satellite:
         locations:
           - loc_1
         subnet: subnet_1
+```
 - settings:
 ```yaml
 satellite:
