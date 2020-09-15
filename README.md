@@ -40,6 +40,7 @@ Foreman components (such as compute resources, subnets, etc) are defined under `
 | `compute_profiles`       | List of compute profiles mapped to a compute resource.                                                                                                 |
 | `provisioning_templates` | List of provisioning templates mapped to zero to many organizations and locations. Expects a .erb file to exist on the server running ansible.         |
 | `partition_tables`       | List of partition tables mapped to zero to many organizations and locations. Expects a .erb file to exist on the server running ansible.               |
+| `hostgroups`             | List of hostgroups mapped to zero to many organizations and locations.                                                                                 |
 | `settings`               | List of foreman settings defined in name:value pairs.                                                                                                  |
 
 - organizations:
@@ -193,6 +194,26 @@ satellite:
           - name: loc_2
           - name: loc_3
 ```
+- hostgroups:
+```yaml
+satellite:
+  foreman:
+    hostgroups:
+      - name: hostgroup_1
+        architecture: x86_64
+        compute_profile: general-vm
+        compute_resource: example_vcenter
+        content_source: satellite.example.lcl
+        content_view: content_view_1
+        domain: domain_1
+        lifecycle_environment: production
+        operatingsystem: RedHat 8.1
+        organization_of_content_source: xyz_corp # orgainzation of content_source, if defined
+        organizations:
+          - org_1
+        locations:
+          - loc_1
+        subnet: subnet_1
 - settings:
 ```yaml
 satellite:
