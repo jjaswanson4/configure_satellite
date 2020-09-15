@@ -17,7 +17,9 @@
     kickstart_repository: "{{ hostgroup.kickstart_repository | default(omit) }}"
     lifecycle_environment: "{{ hostgroup.lifecycle_environment | default(omit) }}"
     operatingsystem: "{{ hostgroup.operatingsystem | default(omit) }}"
-    organization: "{{ hostgroup.organization | default(omit) }}"
+    organization: "{{ hostgroup.organization_of_content_source | default(omit) }}"
+    organizations: "{{ hostgroup.organizations | default(omit) }}"
+    locations: "{{ hostgroup.locations | default(omit) }}"
     subnet: "{{ hostgroup.subnet | default(omit) }}"
   loop_control:
     loop_var: hostgroup
