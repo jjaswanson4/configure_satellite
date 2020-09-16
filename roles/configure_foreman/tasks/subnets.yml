@@ -23,6 +23,9 @@
     network: "{{ subnet.network }}"
     mask: "{{ subnet.mask }}"
     gateway: "{{ subnet.gateway }}"
+    dns_primary: "{{ subnet.dns_primary }}"
+    dns_secondary: "{{ subnet.dns_secondary }}"
+    ipam: "{{ subnet.ipam | default(omit) }}"
   loop_control:
     loop_var: subnet
   loop: "{{ satellite.foreman.subnets }}"
