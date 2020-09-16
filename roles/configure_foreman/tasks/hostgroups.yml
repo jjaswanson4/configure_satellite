@@ -21,6 +21,10 @@
     organizations: "{{ hostgroup.organizations | default(omit) }}"
     locations: "{{ hostgroup.locations | default(omit) }}"
     subnet: "{{ hostgroup.subnet | default(omit) }}"
+    parameters: "{{ hostgroup.parameters | default(omit) }}"
+    ptable: "{{ hostgroup.ptable | default(omit) }}"
+    pxe_loader: "{{ hostgroup.pxe_loader | default(omit) }}"
+    root_pass: "{{ hostgroup.root_pass | default(omit) }}"
   loop_control:
     loop_var: hostgroup
   loop: "{{ satellite.foreman.hostgroups }}"
