@@ -9,6 +9,7 @@
     name: "{{ partition_table.name }}"
     state: "{{ partition_table.state | default(omit) }}"
     file_name: "{{ partition_table.file }}"
+    os_family: "{{ partition_table.os_family | default(omit) }}"
     organizations: "{{ partition_table | json_query('organizations[*].name') | list }}"
     locations: "{{ partition_table | json_query('locations[*].name') | list }}"
   loop_control:
