@@ -28,7 +28,7 @@
 {% endif %}
 {% endfor %}
 {% endif %}
-{% if activtion_key.content_overrides is defined %}
+{% if activation_key.content_overrides is defined %}
     content_overrides:
 {% for content_override in activation_key.content_overrides %}
       - label: {{ content_override.label }}
