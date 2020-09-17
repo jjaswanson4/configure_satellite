@@ -17,3 +17,4 @@
   when:
     - satellite.foreman.compute_profiles is defined
   delegate_to: "{{ delegate_host }}"
+  ignore_errors: "{{ ignore_compute_resource_errors }}"
