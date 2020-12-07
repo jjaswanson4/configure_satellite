@@ -1,7 +1,7 @@
 ---
 
 - name: configure content view {{ content_view.name }}
-  theforeman.foreman.content_view:{% raw %}
+  redhat.satellite.content_view:{% raw %}
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
@@ -23,7 +23,7 @@
 {% if content_view.filters is defined %}
 {% for content_view_filter in content_view.filters %}
 - name: configure filter {{ content_view_filter.name }} for {{ content_view.name }}
-  theforeman.foreman.content_view_filter:{% raw %}
+  redhat.satellite.content_view_filter:{% raw %}
     username: "{{ satellite.admin_username }}"
     password: "{{ satellite.admin_password }}"
     validate_certs: false
