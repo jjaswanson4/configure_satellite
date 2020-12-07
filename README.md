@@ -13,6 +13,10 @@ The best way to consume this collection is to set up a requirements.yml:
 ---
 collections:
   - jjaswanson4.configure_satellite
+# if using the redhat.satellite roles:
+  - redhat.satellite
+# if using the theforeman.foreman roles:
+  - theforeman.foreman
 ```
 The collection can also be installed from the command line ad-hoc:
 ```
