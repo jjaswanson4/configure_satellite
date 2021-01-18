@@ -17,7 +17,6 @@
     - domains.yml
     - subnets.yml
     - compute-resources.yml
-    - compute-profiles.yml
   when:
     - not (requires_katello_content) or
       override_run_all
@@ -28,6 +27,8 @@
   loop_control:
     loop_var: task
   loop:
+    - images.yml
+    - compute-profiles.yml
     - provisioning-templates.yml
     - partition-tables.yml
     - operating-systems.yml
