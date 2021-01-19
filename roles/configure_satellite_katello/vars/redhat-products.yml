@@ -1,0 +1,108 @@
+---
+
+- name: rhel8
+  content_views:
+    - name: cv-server-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+          product: Red Hat Enterprise Linux for x86_64
+          releasever: 8
+    - name: cv-appstream-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+          product: Red Hat Enterprise Linux for x86_64
+          releasever: 8
+    - name: cv-satellitetools6.8-rhel8
+      repos:
+        - repo: Red Hat Satellite Tools 6.8 for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Enterprise Linux for x86_64
+    - name: cv-kickstart-rhel8.3
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (Kickstart)
+          product: Red Hat Enterprise Linux for x86_64
+          releasever: 8.3
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (Kickstart)
+          product: Red Hat Enterprise Linux for x86_64
+          releasever: 8.3
+
+- name: rhel7
+  content_views:
+    - name: cv-server-rhel7
+      repos:
+        - repo: Red Hat Enterprise Linux 7 Server (RPMs)
+          product: Red Hat Enterprise Linux Server
+          releasever: 7Server
+          basearch: x86_64
+    - name: cv-kickstart-rhel7.9
+      repos:
+        - repo: Red Hat Enterprise Linux 7 Server (Kickstart)
+          product: Red Hat Enterprise Linux Server
+          releasever: 7.9
+          basearch: x86_64
+    - name: cv-satellitetools6.8-rhel7
+      repos:
+        - repo: Red Hat Satellite Tools 6.8 (for RHEL 7 Server) (RPMs)
+          product: Red Hat Enterprise Linux Server
+          basearch: x86_64
+
+- name: openstack16
+  content_views:
+    - name: cv-server-eus-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS - Extended Update Support (RPMs)
+          product: Red Hat Enterprise Linux for x86_64 - Extended Update Support
+          releasever: 8.2
+    - name: cv-appstream-eus-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream - Extended Update Support (RPMs)
+          product: Red Hat Enterprise Linux for x86_64 - Extended Update Support
+          releasever: 8.2
+    - name: cv-ha-eus-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - High Availability - Extended Update Support (RPMs)
+          product: Red Hat Enterprise Linux High Availability for x86_64 - Extended Update Support
+          releasever: 8.2
+    - name: cv-osp16.1-rhel8
+      repos:
+        - repo: Red Hat OpenStack Platform 16.1 for RHEL 8 x86_64 (RPMs)
+          product: Red Hat OpenStack
+          basearch: x86_64
+    - name: cv-fastdatapath-rhel8
+      repos:
+        - repo: Fast Datapath for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Enterprise Linux Fast Datapath
+          basearch: x86_64
+    - name: cv-advancedvirtualization-rhel8
+      repos:
+        - repo: Advanced Virtualization for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Enterprise Linux Advanced Virtualization
+          basearch: x86_64
+    - name: cv-ansible2.9-rhel8
+      repos:
+        - repo: Red Hat Ansible Engine 2.9 for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Ansible Engine 
+          basearch: x86_64
+       
+- name: ceph4
+  content_views:
+    - name: cv-server-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - BaseOS (RPMs)
+          product: Red Hat Enterprise Linux for x86_64
+          releasever: 8
+    - name: cv-appstream-rhel8
+      repos:
+        - repo: Red Hat Enterprise Linux 8 for x86_64 - AppStream (RPMs)
+          product: Red Hat Enterprise Linux for x86_64
+          releasever: 8
+    - name: cv-ceph4-rhel8
+      repos:
+        - repo: Red Hat Ceph Storage OSD 4 for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Ceph Storage OSD
+          basearch: x86_64
+        - repo: Red Hat Ceph Storage MON 4 for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Ceph Storage MON
+          basearch: x86_64
+        - repo: Red Hat Ceph Storage Tools 4 for RHEL 8 x86_64 (RPMs)
+          product: Red Hat Enterprise Linux for x86_64
+          basearch: x86_64 
