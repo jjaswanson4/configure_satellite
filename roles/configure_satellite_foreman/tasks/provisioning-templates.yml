@@ -10,7 +10,7 @@
     audit_comment: "{{ provisioning_template.audit_comment | default(omit) }}"
     file_name: "{{ provisioning_template.file | default(omit) }}"
     kind: "{{ provisioning_template.kind | default(omit) }}"
-    operatingsystems: "{{ provisioning_template | json_query('operatingsystems[*].name') }}"
+    operatingsystems: "{{ omit if provisioning_template.operatingsystems is not defined else provisioning_template | json_query('operatingsystems[*].name') }}"
     template: "{{ provisioning_template.template | default(omit) }}"
     updated_name: "{{ provisioning_template.updated_name | default(omit) }}"
     state: "{{ provisioning_template.state | default(omit) }}"
