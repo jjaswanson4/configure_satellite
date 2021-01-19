@@ -32,6 +32,7 @@
     - provisioning-templates.yml
     - partition-tables.yml
     - operating-systems.yml
+    - os-default-templates.yml
     - hostgroups.yml
   when:
     - requires_katello_content or
