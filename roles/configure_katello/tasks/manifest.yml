@@ -1,5 +1,14 @@
 ---
 
+- name: stage manifest
+  ansible.builtin.copy:
+    src: "{{ organization.manifest }}"
+    dest: /root/manifest.zip
+    owner: root
+    group: root
+    mode: 0600
+  register: stage_manifest
+
 - name: upload manifest
   theforeman.foreman.subscription_manifest:
     username: "{{ satellite.admin_username }}"
@@ -8,5 +17,7 @@
     server_url: "{{ satellite_url }}"
     organization: "{{ organization.organization_name }}"
     state: present
-    manifest_path: "{{ organization.manifest }}"
-  delegate_to: "{{ delegate_host }}"
+    manifest_path: /root/manifest.zip
+  when:
+    - stage_manifest is defined
+    - stage_manifest.changed

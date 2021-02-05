@@ -18,6 +18,7 @@
     - subnets.yml
     - compute-resources.yml
     - compute-profiles.yml
+    - auth_sources_ldap.yml
   when:
     - not (requires_katello_content) or
       override_run_all

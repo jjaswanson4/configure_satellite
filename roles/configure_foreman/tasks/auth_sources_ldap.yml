@@ -1,0 +1,61 @@
+---
+
+- name: Set auth sources
+  theforeman.foreman.auth_source_ldap:
+    name: "{{ auth_source.name }}"
+    host: "{{ auth_source.host }}"
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    server_url: "{{ satellite_url }}"
+    onthefly_register: "{{ auth_source.onthefly_register | default(omit) }}"
+    account: "{{ auth_source.account | default(omit) }}"
+    account_password: "{{ auth_source.account_password | default(omit) }}"
+    base_dn: "{{ auth_source.base_dn | default(omit) }}"
+    groups_base: "{{ auth_source.groups_base | default(omit) }}"
+    server_type: "{{ auth_source.server_type | default(omit) }}"
+    attr_login: "{{ auth_source.attr_login | default(omit) }}"
+    attr_firstname: "{{ auth_source.attr_firstname | default(omit) }}"
+    attr_lastname: "{{ auth_source.attr_lastname | default(omit) }}"
+    attr_mail: "{{ auth_source.attr_mail | default(omit) }}"
+    ldap_filter: "{{ auth_source.ldap_filter | default(omit) }}"
+    organizations: "{{ auth_source.organizations | default(omit) }}"
+    locations: "{{ auth_source.locations | default(omit) }}"
+    port: "{{ auth_source.port | default(omit) }}"
+    tls: "{{ auth_source.tls | default(omit) }}"
+    validate_certs: "{{ auth_source.validate_certs | default(omit) }}"
+    state: "{{ auth_source.state | default('present') }}"
+  loop_control:
+    loop_var: auth_source
+  loop: "{{ satellite.auth_sources | default('[]') }}"
+  delegate_to: "{{ groups['satellite'][0] }}"
+
+- name: Create user groups
+  theforeman.foreman.usergroup:
+    name: "{{ internal_group.name }}"
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    server_url: "{{ satellite_url }}"
+    validate_certs: "{{ auth_source.validate_certs | default(omit) }}"
+    state: "{{ internal_group.state | default(omit) }}"
+    admin: "{{ internal_group.admin | default(omit) }}"
+    roles: "{{ internal_group.roles | default(omit) }}"
+    usergroups: "{{ internal_group.usergroups | default(omit) }}"
+  loop_control:
+    loop_var: internal_group
+  loop: "{{ satellite.internal_groups | default('[]') }}"
+  delegate_to: "{{ groups['satellite'][0] }}"
+
+- name: Set external groups
+  theforeman.foreman.external_usergroup:
+    name: "{{ external_group.name }}"
+    username: "{{ satellite.admin_username }}"
+    password: "{{ satellite.admin_password }}"
+    server_url: "{{ satellite_url }}"
+    validate_certs: "{{ auth_source.validate_certs | default(omit) }}"
+    state: "{{ external_group.state | default(omit) }}"
+    auth_source: "{{ external_group.auth_source }}"
+    usergroup: "{{ external_group.usergroup }}"
+  loop_control:
+    loop_var: external_group
+  loop: "{{ satellite.external_groups }}"
+  delegate_to: "{{ groups['satellite'][0] }}"
