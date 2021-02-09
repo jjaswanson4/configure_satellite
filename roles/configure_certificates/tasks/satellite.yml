@@ -1,0 +1,22 @@
+---
+
+- name: Update Certificates
+  ansible.builtin.command:
+    cmd: "satellite-installer --scenario satellite --certs-server-cert {{ cert_crt_path }} --certs-server-key {{ cert_key_path }} --certs-server-ca-cert {{ cert_bundle_path }} --certs-update-server --certs-update-server-ca"
+    chdir: "{{ cert_directory }}"
+  register: update_certs_command
+  when:
+    - cert_subject.skipped is undefined
+    - not checkfile_exists.stat.exists
+
+- name: Create new CheckFile
+  ansible.builtin.copy:
+    content: "Cert for {{ cert_cn }} with expiration {{ cert_expiration_date.stdout }} installed on {{ ansible_date_time.iso8601 }}"
+    dest: "{{ checkfile_name }}"
+    group: root
+    owner: root
+    mode: 0600
+  when:
+    - cert_subject.skipped is undefined
+    - not checkfile_exists.stat.exists
+    - update_certs_command.rc == 0
