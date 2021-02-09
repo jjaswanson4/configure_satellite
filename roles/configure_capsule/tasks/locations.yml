@@ -1,0 +1,17 @@
+---
+
+- name: get current capsule locations
+  shell: hammer --csv capsule info --name "{{ inventory_hostname }}" --fields Locations | grep -v ^Locations
+  register: capsule_locations
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  check_mode: false
+  delegate_to: "{{ groups['satellite'][0]}}"
+
+- name: set capsule locations
+  shell: hammer capsule update --name "{{ inventory_hostname }}" --locations "{{ capsule_location }}"
+  changed_when:
+    - capsule_location != capsule_locations.stdout
+  delegate_to: "{{ groups['satellite'][0]}}"
+#  notify: sync_capsule

@@ -1,0 +1,16 @@
+---
+
+- name: get current capsule organizations
+  shell: hammer --csv capsule info --name "{{ inventory_hostname }}" --fields Organizations | grep -v ^Organizations
+  register: capsule_organizations
+  changed_when: false
+  failed_when: false
+  ignore_errors: true
+  check_mode: false
+  delegate_to: "{{ groups['satellite'][0] }}"
+
+- name: set capsule organizations
+  shell: hammer capsule update --name "{{ inventory_hostname }}" --organizations "{{ satellite.foreman | json_query('organizations[*].name') | list | sort | join(',') }}"
+  changed_when:
+    - satellite.foreman | json_query('organizations[*].name') | list | sort | join(',') != capsule_organizations.stdout
+  delegate_to: "{{ groups['satellite'][0] }}"
