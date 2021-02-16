@@ -1,0 +1,13 @@
+---
+
+- import_tasks: organizations.yml
+  when:
+    - inventory_hostname in groups['capsules']
+
+- import_tasks: locations.yml
+  when:
+    - inventory_hostname in groups['capsules']
+
+- import_tasks: lifecycle_environments.yml
+  when:
+    - inventory_hostname in groups['capsules']

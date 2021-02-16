@@ -1,12 +1,13 @@
 namespace: jjaswanson4
 name: configure_satellite
-version: 2.0.2
+version: 2.1.0
 readme: README.md
 authors:
 authors:
 - Josh Swanson <jswanson@redhat.com>
 - Scott Danielson <sdaniels@redhat.com>
 - Rodrique Heron <rheron@redhat.com>
+- Derek Winters <contact@derekwinters.com>
 description: This collection configures a satellite 6 server
 license:
 - GPL-2.0-or-later

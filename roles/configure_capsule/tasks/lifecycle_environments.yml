@@ -1,0 +1,23 @@
+---
+
+- name: get current capsule lifecycle environments
+  shell: hammer --csv capsule content lifecycle-environments --name "{{ inventory_hostname }}" | grep -v ^ID | cut -d ',' -f 2
+  changed_when: false
+  check_mode: false
+  ignore_errors: true
+  failed_when: false
+  register: capsule_lifecycle_environments
+  delegate_to: "{{ groups['satellite'][0] }}"
+
+- name: configure lifecycle environments
+  shell: hammer capsule content add-lifecycle-environment --name "{{ inventory_hostname }}" --lifecycle-environment "{{ item }}" --organization "{{ organization.organization_name }}"
+  register: adjust_capsule
+  changed_when:
+    - "'already attached' not in adjust_capsule.stderr"
+    - adjust_capsule.rc | int == 0
+  failed_when:
+    - "'already attached' not in adjust_capsule.stderr"
+    - adjust_capsule.rc | int != 0
+  with_items:
+    - "{{ capsule_environments }}"
+  delegate_to: "{{ groups['satellite'][0] }}"

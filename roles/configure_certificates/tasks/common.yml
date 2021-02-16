@@ -1,0 +1,176 @@
+---
+
+- name: Ensure hosts file reverse lookup
+  ansible.builtin.lineinfile:
+    path: /etc/hosts
+    line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname_short }}"
+    state: present
+
+- name: Set certificate base path
+  ansible.builtin.set_fact:
+    cert_base_directory: "/root/certificate"
+
+- name: Set certificate path
+  ansible.builtin.set_fact:
+    cert_directory: "{{ cert_base_directory}}/{{ inventory_hostname }}"
+
+- name: Set certificate facts
+  ansible.builtin.set_fact:
+    cert_key_path: "{{ cert_directory }}/key.pem"
+    cert_crt_path: "{{ cert_directory }}/crt.pem"
+
+- name: Set capsule certs tar
+  ansible.builtin.set_fact:
+    certs_tar: "{{ cert_directory }}/{{ inventory_hostname }}.tar"
+  when:
+    - inventory_hostname in groups['capsules']
+
+- name: Ensure certificate directory
+  ansible.builtin.file:
+    path: "{{ cert_directory }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0700'
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Create certificate.key.pem
+  ansible.builtin.copy:
+    content: "{{ cert_key_content }}"
+    dest: "{{ cert_key_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  register: create_key
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+
+- name: Create certificate.crt.pem
+  ansible.builtin.copy:
+    content: "{{ cert_crt_content }}"
+    dest: "{{ cert_crt_path }}"
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  register: create_crt
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Get Cert Data
+  ansible.builtin.command:
+    cmd: "openssl x509 -noout -subject -in {{ cert_crt_path }}"
+  register: cert_subject
+  changed_when: false
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+  check_mode: no
+  when:
+    - create_key.skipped is undefined or create_crt.skipped is undefined
+
+- name: Show Cert Data
+  ansible.builtin.debug:
+    var: cert_subject
+    verbosity: 1
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Split Cert Data
+  ansible.builtin.set_fact:
+    split_cert_data: "{{ cert_subject.stdout.split('/') }}"
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Show Cert Split
+  ansible.builtin.debug:
+    var: split_cert_data
+    verbosity: 1
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Get Cert CN
+  ansible.builtin.set_fact:
+    cert_cn: "{{ split_cert_data | map('regex_search', '^CN=.*') | select('string') | list }}"
+  failed_when: cert_cn | count != 1
+  changed_when: false
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Clean Cert CN
+  ansible.builtin.set_fact:
+    cert_cn: "{{ cert_cn[0].split('=')[1] }}"
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Get Cert Expiration Date
+  ansible.builtin.command:
+    cmd: "openssl x509 -in {{ cert_crt_path }} -noout -enddate"
+  register: cert_expiration_date_raw
+  changed_when: false
+  check_mode: no
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: Format Cert Expiration Date
+  ansible.builtin.command:
+    cmd: "date --date=\"{{ cert_expiration_date_raw.stdout.split('=')[1] }}\" --iso-8601"
+  register: cert_expiration_date
+  check_mode: no
+  changed_when: false
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+# Make sure the crt is the one that is currently installed by placing a file
+# in the certificate directory with the expiration date of the crt file.
+- name: Set CheckFile Name
+  ansible.builtin.set_fact:
+    checkfile_name: "{{ cert_directory }}/{{ cert_cn }}-{{ cert_expiration_date.stdout }}"
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+- name: CheckFile Exists
+  ansible.builtin.stat:
+    path: "{{ checkfile_name }}"
+  register: checkfile_exists
+  when:
+    - cert_subject.skipped is undefined
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+  check_mode: no
+
+- name: Move CheckFile
+  ansible.builtin.command:
+    cmd: "mv {{ checkfile_name }} {{ checkfile_name}}_moved_{{ ansible_date_time.iso8601 }}"
+  when:
+    - cert_subject.skipped is undefined
+    - (create_key.changed or create_crt.changed) and checkfile_exists.stat.exists
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+
+# If CheckFile doesn't exist, the certs need to be updated and should be validated first
+- name: Check Certificates
+  ansible.builtin.command:
+    cmd: "/sbin/katello-certs-check -c '{{ cert_crt_path }}' -k '{{ cert_key_path }}' -b '{{ cert_bundle_path }}'"
+  when:
+    - cert_subject.skipped is undefined
+    - (not checkfile_exists.stat.exists) or ( (create_key.changed or create_crt.changed) and checkfile_exists.stat.exists)
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+  check_mode: no

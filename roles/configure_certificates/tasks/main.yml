@@ -1,0 +1,16 @@
+---
+# https://github.com/jjaswanson4/satellite6-deployment/blob/satellite6.7/roles/install_capsule/tasks/generate-certs.yml
+#
+- name: Include Common Tasks
+  include_tasks: common.yml
+
+- name: Include Satellite Tasks
+  include_tasks: satellite.yml
+  when:
+    - inventory_hostname in groups['satellite']
+
+- name: Include Capsule Tasks
+  include_tasks: capsule.yml
+  when:
+    - inventory_hostname in groups['capsules']
+

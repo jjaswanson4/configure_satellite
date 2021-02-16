@@ -1,0 +1,91 @@
+---
+
+- name: Generate New Certs for Capsule
+  ansible.builtin.command:
+    cmd: "capsule-certs-generate --certs-tar {{ certs_tar }} --foreman-proxy-fqdn {{ inventory_hostname }} --server-cert {{ cert_crt_path }} --server-key {{ cert_key_path }} --server-ca-cert {{ cert_bundle_path }}"
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+  register: generate_certs
+  check_mode: no
+  when:
+    - cert_subject.skipped is undefined
+    - not checkfile_exists.stat.exists
+
+
+- name: Update Certs for Capsule
+  ansible.builtin.command:
+    cmd: "capsule-certs-generate --certs-tar {{ cert_tar }} --foreman-proxy-fqdn {{ inventory_hostname }} --server-cert {{ cert_crt_path }} --server-key {{ cert_key_path }} --server-ca-cert {{ cert_bundle_path }} --cersts-update-server"
+  delegate_to: "{{ groups['satellite'][0] }}"
+  throttle: 1
+  check_mode: no
+  register: update_certs
+  when:
+    - cert_subject.skipped is undefined
+    - (create_key.changed or create_crt.changed) and checkfile_exists.stat.exists
+
+- name: Set Cert Output Fact (New)
+  ansible.builtin.set_fact:
+    cert_output_stdout: "{{ generate_certs.stdout_lines }}"
+  when:
+    - generate_certs.changed
+
+- name: Set Cert Output Fact (Updated)
+  ansible.builtin.set_fact:
+    cert_output_stdout: "{{ update_certs.stdout_lines }}"
+  when:
+    - update_certs.changed
+
+- name: Copy Certs local
+  ansible.builtin.fetch:
+    src: "{{ certs_tar }}"
+    dest: /tmp/
+    flat: yes
+  delegate_to: "{{ groups['satellite'][0] }}"
+  when:
+    - generate_certs.changed or update_certs.changed
+
+- name: Create Capsule Certificate Directory
+  ansible.builtin.file:
+    path: /root/certificate
+    state: directory
+
+- name: Copy Certs to Capsule
+  ansible.builtin.copy:
+    src: "/tmp/{{ inventory_hostname }}.tar"
+    dest: "/root/certificate/{{ inventory_hostname }}.tar"
+  when:
+    - generate_certs.changed or update_certs.changed
+    - not ansible_check_mode
+
+- name: set foreman-proxy-oauth-consumer-key fact
+  set_fact:
+      foreman_proxy_oauth_consumer_key: "{{ line.split('\"')[1] }}"
+  when:
+    - cert_output_stdout is defined
+    - line | regex_search('foreman-proxy-oauth-consumer-key')
+  loop_control:
+    loop_var: line
+  loop: "{{ cert_output_stdout }}"
+
+- name: set foreman-proxy-oauth-consumer-secret fact
+  set_fact:
+      foreman_proxy_oauth_consumer_secret: "{{ line.split('\"')[1] }}"
+  when:
+    - cert_output_stdout is defined
+    - line | regex_search('foreman-proxy-oauth-consumer-secret')
+  loop_control:
+    loop_var: line
+  loop: "{{ cert_output_stdout }}"
+
+- name: Create Options File
+  ansible.builtin.copy:
+    content: "--certs-tar-file '/root/certificate/{{ inventory_hostname }}.tar' --foreman-proxy-content-parent-fqdn '{{ groups['satellite'][0] }}' --foreman-proxy-register-in-foreman 'true' --foreman-proxy-foreman-base-url 'https://{{ groups['satellite'][0] }}' --foreman-proxy-trusted-hosts '{{ groups['satellite'][0] }}' --foreman-proxy-trusted-hosts '{{ inventory_hostname }}' --foreman-proxy-oauth-consumer-key '{{ foreman_proxy_oauth_consumer_key }}' --foreman-proxy-oauth-consumer-secret '{{ foreman_proxy_oauth_consumer_secret }}' --puppet-server-foreman-url 'https://{{ groups['satellite'][0] }}' --enable-foreman-proxy-plugin-remote-execution-ssh"
+    dest: "/root/certificate/options"
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  when:
+    - foreman_proxy_oauth_consumer_key is defined
+    - foreman_proxy_oauth_consumer_secret is defined
+
