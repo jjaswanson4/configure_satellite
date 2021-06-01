@@ -72,9 +72,11 @@
 {% if content_view_filter.version is defined %}
     version: {{ content_view_filter.version }}
 {% endif %}
+{% if content_view_filter.package_name is defined %}
+     package_name: {{ content_view_filter.package_name }}
+{% endif %}
     content_view: {{ content_view.name }}
-    name: {{ content_view_filter.name }}
-    package_name: {{ content_view_filter.package_name }}{% raw %}
+    name: {{ content_view_filter.name }}{% raw %}
   delegate_to: "{{ delegate_host }}"
   register: content_view_filter
 {% endraw %}
