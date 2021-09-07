@@ -25,6 +25,8 @@
     ptable: "{{ hostgroup.ptable | default(omit) }}"
     pxe_loader: "{{ hostgroup.pxe_loader | default(omit) }}"
     root_pass: "{{ hostgroup.root_pass | default(omit) }}"
+    parent: "{{ hostgroup.parent | default(omit) }}"
+    ansible_roles: "{{ hostgroup.ansible_roles | default(omit) }}"
   loop_control:
     loop_var: hostgroup
   loop: "{{ satellite.foreman.hostgroups }}"
