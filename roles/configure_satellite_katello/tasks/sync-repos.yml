@@ -1,35 +1,46 @@
 ---
 
-- name: grab all products to sync
-  shell: hammer --csv repository list --organization "{{ organization.organization_name }}" | cut -d ',' -f 3 | sort --unique | grep -v '^Product$'
-  register: all_products
-  changed_when: false
-  check_mode: false
-  tags:
-    - sync_repos
+- name: run from {{ delegate_host }}
+  block:
+    - name: get all respositories to sync
+      redhat.satellite.resource_info:
+        username: "{{ satellite.admin_username }}"
+        password: "{{ satellite.admin_password }}"
+        validate_certs: false
+        server_url: "{{ satellite_url }}"
+        resource: repositories
+        organization: "{{ organization.organization_name }}"
+      register: repositories
+    
+    - name: trigger repository syncs
+      redhat.satellite.repository_sync:
+        username: "{{ satellite.admin_username }}"
+        password: "{{ satellite.admin_password }}"
+        validate_certs: false
+        server_url: "{{ satellite_url }}"
+        organization: "{{ organization.organization_name }}"
+        repository: "{{ repository.name }}"
+        product: "{{ repository.product.name }}"
+      async: 86400
+      poll: 0
+      loop: "{{ repositories.resources }}"
+      loop_control:
+          loop_var: repository
 
-- name: sync all repos
-  redhat.satellite.repository_sync:
-    username: "{{ satellite.admin_username }}"
-    password: "{{ satellite.admin_password }}"
-    validate_certs: false
-    server_url: "{{ satellite_url }}"
-    organization: "{{ organization.organization_name }}"
-    product: "{{ product }}"
-  loop_control:
-    loop_var: product
-  loop: "{{ all_products.stdout_lines }}"
-  async: 999999
-  poll: 0
+    - name: wait for respository syncs to start
+      ansible.builtin.pause:
+        seconds: 30
+    
+    - name: wait for repository syncs to finish
+      redhat.satellite.resource_info:
+        username: "{{ satellite.admin_username }}"
+        password: "{{ satellite.admin_password }}"
+        validate_certs: false
+        server_url: "{{ satellite_url }}"
+        resource: foreman_tasks
+        search: action ~ Synchronize repository and state != stopped
+      register: respository_sync_tasks
+      until: respository_sync_tasks.resources | length == 0
+      retries: 2880
+      delay: 30
   delegate_to: "{{ delegate_host }}"
-  tags:
-    - sync_repos
-
-- name: wait for repos to finish syncing
-  shell: hammer --csv task list --search "state = running and action ~ Synchronize" | wc -l
-  register: repo_sync_status
-  until: repo_sync_status.stdout | int == 1
-  retries: 960
-  delay: 60
-  tags:
-    - sync_repos
