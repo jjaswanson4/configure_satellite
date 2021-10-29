@@ -8,6 +8,8 @@
     group: root
     mode: 0600
   register: stage_manifest
+  when:
+    - organization.manifest is defined
 
 - name: upload manifest
   theforeman.foreman.subscription_manifest:
