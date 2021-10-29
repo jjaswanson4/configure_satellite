@@ -5,6 +5,8 @@
   register: redhat_products
   changed_when: false
   check_mode: false
+  ignore_errors: true #in case there are no red hat repos for this organization
+
 
 - name: set Red Hat products to sync plan
   theforeman.foreman.product:
