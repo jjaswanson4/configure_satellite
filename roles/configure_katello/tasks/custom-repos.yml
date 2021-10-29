@@ -14,7 +14,7 @@
     url: "{{ repo.1.repo_url }}"
     mirror_on_sync: "{{ repo.1.mirror_on_sync | default(false) }}"
     download_policy: "{{ repo.1.download_policy | default('immediate') }}"
-    gpg_key: "{{ repo.1.content_credential_name }}"
+    gpg_key: "{{ repo.1.content_credential_name | default(omit) }}"
     checksum_type: "{{ repo.1.checksum_type | default(omit) }}"
     unprotected: "{{ repo.1.unprotected | default(omit) }}"
     upstream_username: "{{ repo.1.upstream_username | default(omit) }}"
@@ -23,7 +23,7 @@
     - repo.1.repo is defined
     - repo.1.product is defined
     - repo.1.repo_url is defined
-    - repo.1.content_credential is defined
+    - repo.1.custom_repo is defined
   loop_control:
     loop_var: repo
   loop: "{{ organization.content_views | subelements('repos') }}"

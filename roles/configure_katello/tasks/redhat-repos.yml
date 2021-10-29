@@ -13,7 +13,7 @@
     - releasever: "{{ repo.1.releasever | default(omit) }}"
       basearch: "{{ repo.1.basearch | default(omit) }}"
   when:
-    - repo.1.content_credential is not defined
+    - repo.1.custom_repo is undefined
   loop_control:
     loop_var: repo
   loop: "{{ organization.content_views | subelements('repos') }}"

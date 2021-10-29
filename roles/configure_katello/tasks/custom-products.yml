@@ -8,11 +8,11 @@
     server_url: "{{ satellite_url }}"
     organization: "{{ organization.organization_name }}"
     name: "{{ product.1.product }}"
-    gpg_key: "{{ product.1.content_credential_name }}"
-    sync_plan: daily
+    gpg_key: "{{ product.1.content_credential_name | default(omit) }}"
+    sync_plan: "{{ product.1.sync_plan | default('daily') }}"
   when:
     - product.1.product is defined
-    - product.1.content_credential_name is defined
+    - product.1.custom_repo is defined
   loop_control:
     loop_var: product
   loop: "{{ organization.content_views | subelements('repos') }}"
