@@ -4,7 +4,7 @@
   file:
     path: "{{ role_path }}/tasks/satellite-configuration/{{ organization.organization_name }}/activation-keys"
     state: directory
-  delegate_to: "{{ delegate_host }}"
+  delegate_to: localhost
 
 - name: push task file to create activation key
   template:
@@ -13,7 +13,7 @@
   loop_control:
     loop_var: activation_key
   loop: "{{ organization.activation_keys }}"
-  delegate_to: "{{ delegate_host }}"
+  delegate_to: localhost
 
 - name: include tasks to create activation keys
   include_tasks: "{{ role_path }}/tasks/satellite-configuration/{{ organization.organization_name }}/activation-keys/{{ activation_key.name }}.yml"

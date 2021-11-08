@@ -4,7 +4,7 @@
   file:
     path: "{{ role_path }}/tasks/satellite-configuration/{{ organization.organization_name }}/content-views"
     state: directory
-  delegate_to: "{{ delegate_host }}"
+  delegate_to: localhost
 
 - name: push task file to create composite content view
   template:
@@ -13,7 +13,7 @@
   loop_control:
     loop_var: composite_content_view
   loop: "{{ organization.composite_content_views }}"
-  delegate_to: "{{ delegate_host }}"
+  delegate_to: localhost
 
 - name: include tasks to create composite content views
   include_tasks: "{{ role_path }}/tasks/satellite-configuration/{{ organization.organization_name }}/content-views/{{ composite_content_view.name }}.yml"

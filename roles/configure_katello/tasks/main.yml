@@ -3,7 +3,12 @@
 - import_tasks: manifest.yml
 - import_tasks: lifecycle-environments.yml
 - import_tasks: redhat-repos.yml
-- import_tasks: content-credentials.yml
+- include_tasks: content-credentials.yml
+  when:
+    - content_credential.1.content_credential is defined
+  loop_control:
+    loop_var: content_credential
+  loop: "{{ organization.content_views | subelements('repos') }}"
 - import_tasks: sync-plan.yml
 - import_tasks: custom-products.yml
 - import_tasks: associate-redhat-products-with-sync-plan.yml

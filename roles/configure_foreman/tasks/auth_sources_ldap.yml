@@ -57,5 +57,5 @@
     usergroup: "{{ external_group.usergroup }}"
   loop_control:
     loop_var: external_group
-  loop: "{{ satellite.external_groups }}"
+  loop: "{{ satellite.external_groups | default('[]') }}"
   delegate_to: "{{ groups['satellite'][0] }}"
