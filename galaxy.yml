@@ -1,6 +1,6 @@
 namespace: jjaswanson4
 name: configure_satellite
-version: 2.1.6
+version: 2.2.0
 readme: README.md
 authors:
   - Josh Swanson <jswanson@redhat.com>
