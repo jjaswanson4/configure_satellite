@@ -2,7 +2,7 @@
 
 - name: create content view task file directory
   file:
-    path: "{{ role_path }}/tasks/satellite-configuration/{{ organization.organization_name }}/content-views"
+    path: "{{ generated_files_path }}/content-views"
     state: directory
   delegate_to: "{{ delegate_host }}"
 
