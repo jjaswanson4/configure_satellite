@@ -2,6 +2,6 @@
 
 satellite_url: "https://{{ ansible_fqdn }}"
 
-generated_tasks_files_path: /tmp/satellite-automation
+generated_files_path: "/tmp/satellite-automation/{{ inventory_hostname }}/{{ organization.organization_name }}"
 
 delegate_host: localhost
